@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Select Subject</title>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+<style>
+/* Glassmorphism Header Bar - Stronger white glass effect */
+.glass-header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 1100;
+  padding: 0 40px;
+  background: rgba(255,255,255,0.65); /* More visible white glass */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 0 0 32px 32px;
+  border: 1px solid rgba(255,255,255,0.28);
+  gap: 24px;
+}
+.quizify-heading {
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: #a259f7;
+  letter-spacing: 1.5px;
+  font-family: 'Poppins', Arial, sans-serif;
+  user-select: none;
+  text-shadow: 0 2px 8px #0002;
+}
+@media (max-width: 600px) {
+  .glass-header-bar {
+    height: 60px;
+    padding: 0 10px;
+    border-radius: 0 0 18px 18px;
+    gap: 10px;
+  }
+  .quizify-heading {
+    font-size: 1.7rem;
+  }
+}
+
+/* Adjusted Toggle container styles inside header */
+.glass-header-bar .tdnn {
+  position: relative;           /* Not fixed, inside flex */
+  top: 0; left: 0;
+  margin-right: 18px;
+  margin-left: 0;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(200, 200, 255, 0.2);
+  box-shadow: 0 2px 8px #0001;
+  z-index: 1;
+  transition: background 0.2s;
+  cursor: pointer;
+  font-size: 22px;
+}
+.glass-header-bar .tdnn.day {
+  background: #FFBF71;
+}
+
+.glass-header-bar .moon,
+.glass-header-bar .sun {
+  position: static;
+  margin: 0 auto;
+  width: 36px;
+  height: 36px;
+}
+
+@media (max-width: 600px) {
+  .glass-header-bar .tdnn {
+    width: 36px;
+    height: 36px;
+    margin-right: 7px;
+    font-size: 15px;
+  }
+  .glass-header-bar .moon,
+  .glass-header-bar .sun {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Top Bar Styles */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 70px;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 16px 0 rgba(60,40,120,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1100;
+  padding: 0 36px;
+  backdrop-filter: blur(8px);
+}
+.top-bar-title {
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: #7b2ff2;
+  letter-spacing: 1px;
+  font-family: 'Poppins', Arial, sans-serif;
+  user-select: none;
+  text-shadow: 0 1px 2px #0001;
+}
+body.dark .top-bar {
+  background: rgba(37,29,41,0.95);
+}
+body.light .top-bar {
+  background: rgba(255,255,255,0.95);
+}
+.top-bar .tdnn {
+  position: static;
+  margin: 0;
+  top: unset;
+  right: unset;
+  transform: none;
+}
+@media (max-width: 600px) {
+  .top-bar {
+    height: 56px;
+    padding: 0 12px;
+  }
+  .top-bar-title {
+    font-size: 1.3rem;
+  }
+  .main-content-wrap {
+    margin-top: 70px;
+  }
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --darkbg:#251D29;
+  --darkt: #FFD1F7;
+  --lightbg: #fff;
+  --lightt: #D43370;
+  --toggleHeight: 1.2em;
+  --toggleWidth: 2.5em;
+  --toggleBtnRadius: 1.2em;
+  --bgColor--night: #423966;
+  --toggleBtn-bgColor--night: var(--bgColor--night);
+  --mooncolor: #D9FBFF;
+  --bgColor--day: #9ee3fb;
+  --toggleBtn-bgColor--day: var(--bgColor--day);
+  /* Subject card gradients */
+  --gkn1: #9e9e9e;
+  --gkn2: #616161;
+  --dmgt1: #ff9800;
+  --dmgt2: #ffb347;
+  --dlco1: #7F00FF;
+  --dlco2: #E100FF;
+  --java1: #3f2b96;
+  --java2: #a8c0ff;
+  --python1: #11998e;
+  --python2: #38ef7d;
+  --adsa1: #ff5f6d;
+  --adsa2: #ffc371;
+  --toggle-slider-width: 72px;
+  --toggle-slider-height: 36px;
+  --toggle-knob-size: 30px;
+  --toggle-slider-bg-night: #423966;
+  --toggle-slider-bg-day: #FFBF71;
+  --toggle-knob-bg-night: #423966;
+  --toggle-knob-bg-day: #fffbe6;
+  --mooncolor: #D9FBFF;
+}
+
+/* All existing styles from your original style code (truncated here for brevity) */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--darkbg);
+  color: var(--darkt);
+  font-family: 'Roboto', sans-serif;
+  transition: all .2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 50px 20px;
+  gap: 30px;
+  text-align: center;
+}
+
+body.light {
+  /* Vibrant multi-color gradient for subject selection light mode */
+  background: linear-gradient(120deg, #fffbe6 0%, #ffe0b2 25%, #ffd6e0 55%, #e0f7fa 80%, #fffbe6 100%);
+  color: var(--lightt);
+}
+
+/* Toggle container styles */
+.tdnn {
+  cursor: pointer;
+}
+
+/* Container for all content */
+.main-content-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  /* Add initial opacity for smooth transition */
+  opacity: 1;
+  margin-top: 110px; /* Same height as header plus some spacing */
+}
+
+/* Page heading with gradient text */
+.page-heading {
+  font-weight: 900;
+  font-size: 3rem;
+  margin-bottom: 40px;
+  background: linear-gradient(to right, #8e9eab, #3f2b96, #a8c0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* text-fill-color: transparent; */
+  text-align: center;
+  width: 100%;
+  padding: 0;
+  user-select: none;
+}
+
+/* Cards container */
+.cards-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  width: 100%;
+}
+
+/* Card wrapper with unified height */
+.card-wrap {
+  width: 230px;
+  height: 370px;
+  background: var(--darkbg);
+  border-radius: 20px;
+  overflow: hidden;
+  color: var(--darkt);
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body.light .card-wrap {
+  background: var(--lightbg);
+  color: var(--darkt);
+  box-shadow: 0 4px 12px rgba(1, 1, 1, 0.4);
+}
+.card-wrap:hover {
+  transform: scale(1.05);
+}
+
+/* Curved header top */
+.card-header {
+  height: 150px;
+  width: 100%;
+  border-radius: 100% 0% 100% 0% / 0% 50% 50% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.card-header i {
+  color: #fff;
+  font-size: 64px;
+  transition: color 0.3s ease;
+}
+body.light .card-header i {
+  color: #333;
+}
+.card-header img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  transition: filter 0.3s ease;
+}
+/* Content */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  padding: 15px;
+}
+body.light .card-content {
+  color: var(--lightt);
+}
+/* Subject-specific card title colors */
+.card-title {
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.card-header.dmgt + .card-content .card-title { color: var(--dmgt1); }
+.card-header.dlco + .card-content .card-title { color: var(--dlco1); }
+.card-header.java + .card-content .card-title { color: var(--java1); }
+.card-header.python + .card-content .card-title { color: var(--python1); }
+.card-header.adsa + .card-content .card-title { color: var(--adsa1); }
+.card-header.gkn + .card-content .card-title { color: var(--gkn1); }
+/* Card text color and shadow for dark/light mode */
+.card-text {
+  font-size: 12px;
+  margin-bottom: 15px;
+  flex-grow: 1;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.25), 0 0px 2px #fff2;
+}
+body.light .card-text {
+  color: #222;
+  text-shadow: 0 1px 8px rgba(255,255,255,0.12), 0 0px 2px #0001;
+}
+/* Buttons */
+/* Start Quiz button font and shadow same as card-text */
+.card-btn {
+  border: none;
+  border-radius: 100px;
+  padding: 6px 18px;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.25), 0 0px 2px #fff2;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: 10px;
+  background: linear-gradient(to left, var(--dmgt1), var(--dmgt2)); /* Default gradient - overwritten below */
+  transition: all 0.3s ease;
+}
+body.light .card-btn {
+  color: #222;
+  text-shadow: 0 1px 8px rgba(255,255,255,0.12), 0 0px 2px #0001;
+}
+/* Subject-specific gradients */
+.card-header.dmgt {
+  background: linear-gradient(135deg, var(--dmgt1) 0%, var(--dmgt2) 100%);
+}
+.card-btn.dmgt {
+  background: linear-gradient(90deg, var(--dmgt1) 0%, var(--dmgt2) 100%);
+}
+.card-header.dlco {
+  background: linear-gradient(to bottom left, var(--dlco1), var(--dlco2));
+}
+.card-btn.dlco {
+  background: linear-gradient(to left, var(--dlco1), var(--dlco2));
+}
+.card-header.java {
+  background: linear-gradient(to bottom left, var(--java1), var(--java2));
+}
+.card-btn.java {
+  background: linear-gradient(to left, var(--java1), var(--java2));
+}
+.card-header.python {
+  background: linear-gradient(to bottom left, var(--python1), var(--python2));
+}
+.card-btn.python {
+  background: linear-gradient(to left, var(--python1), var(--python2));
+}
+.card-header.adsa {
+  background: linear-gradient(to bottom left, var(--adsa1), var(--adsa2));
+}
+.card-btn.adsa {
+  background: linear-gradient(to left, var(--adsa1), var(--adsa2));
+}
+.card-header.gkn {
+  background: linear-gradient(to bottom left, var(--gkn1), var(--gkn2));
+}
+.card-btn.gkn {
+  background: linear-gradient(to left, var(--gkn1), var(--gkn2));
+}
+
+/* Sliding animation classes */
+.slide-in-right {
+  animation: slideRightIn 0.5s forwards;
+}
+@keyframes slideRightIn {
+  from { transform: translateX(100vw); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.toggle-slider {
+  width: var(--toggle-slider-width);
+  height: var(--toggle-slider-height);
+  background: var(--toggle-slider-bg-night);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0001;
+  transition: background 0.4s cubic-bezier(.4,2,.6,1);
+  border: 3px solid #e0e0e0;
+  box-sizing: border-box;
+}
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(var(--toggle-slider-height) - 6px);
+  height: calc(var(--toggle-slider-height) - 6px);
+  border-radius: 50%;
+  background: var(--toggle-knob-bg-night);
+  box-shadow: 0 0 0 0.5px #fff2, 0 2px 8px #0001;
+  transition: left 0.4s cubic-bezier(.4,2,.6,1), background 0.4s, box-shadow 0.4s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.toggle-slider.day .toggle-knob {
+  left: calc(100% - (var(--toggle-slider-height) - 6px) - 3px);
+  background: var(--toggle-knob-bg-day);
+  box-shadow: 0 0 0 0.5px #ffbf71, 0 2px 8px #0001;
+}
+/* Moon icon (night) */
+.toggle-knob.moon {
+  background: var(--toggle-knob-bg-night);
+  box-shadow: 0.5em 0.3em 0 0em var(--mooncolor) inset;
+}
+/* Sun icon (day) */
+.toggle-knob.sun {
+  background: #fffbe6;
+  box-shadow: 0 0 0 0.5px #ffbf71, 0 0 8px 2px #fffbe6 inset;
+}
+.toggle-knob.sun::after {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffe066;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  box-shadow: 0 0 8px 2px #ffe06644;
+}
+@media (max-width: 600px) {
+  .toggle-slider {
+    width: 40px;
+    height: 20px;
+    border-width: 2px;
+  }
+  .toggle-knob {
+    width: 12px;
+    height: 12px;
+    top: 2px;
+    left: 2px;
+  }
+  .toggle-slider.day .toggle-knob {
+    left: calc(100% - 12px - 2px);
+  }
+  .toggle-knob.sun::after {
+    width: 6px;
+    height: 6px;
+    left: 3px;
+    top: 3px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Glassmorphism Header Bar with Quizify.com on Left and Toggle Button on Extreme Right -->
+<div class="glass-header-bar">
+  <div class="quizify-heading">Quizify.com</div>
+  <div style="flex:1;"></div>
+  <div class="toggle-slider" title="Toggle Light/Dark Mode">
+    <div class="toggle-knob moon"></div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content-wrap">
+  <h1 class="page-heading">Select Subject</h1>
+  <div class="cards-container">
+    <!-- Cards DMGT -->
+    <div class="card-wrap" data-subject="DMGT">
+      <div class="card-header dmgt">
+        <i style="font-size: 72px; color: white; font-style: normal;">𝚺</i>
+      </div>
+      <div class="card-content">
+        <h1 class="card-title">DMGT</h1>
+        <p class="card-text">
+          Data Management & Governance - Test your skills in managing and organizing
+          data effectively.
+        </p>
+        <button class="card-btn dmgt">Start Quiz</button>
+      </div>
+    </div>
+    <!-- Cards DLCO -->
+    <div class="card-wrap" data-subject="DLCO">
+      <div class="card-header dlco">
+        <i style="font-size: 48px; color: white; font-family: monospace; font-style: normal;">0101</i>
+      </div>
+      <div class="card-content">
+        <h1 class="card-title">DLCO</h1>
+        <p class="card-text">
+          Data Logistics & Cloud Operations - Assess your understanding of modern
+          cloud technologies.
+        </p>
+        <button class="card-btn dlco">Start Quiz</button>
+      </div>
+    </div>
+    <!-- Cards JAVA -->
+    <div class="card-wrap" data-subject="JAVA">
+      <div class="card-header java">
+        <i class="fab fa-java"></i>
+      </div>
+      <div class="card-content">
+        <h1 class="card-title">JAVA</h1>
+        <p class="card-text">
+          Java Programming - Explore object-oriented programming and Java fundamentals.
+        </p>
+        <button class="card-btn java">Start Quiz</button>
+      </div>
+    </div>
+    <!-- Cards PYTHON -->
+    <div class="card-wrap" data-subject="PYTHON">
+      <div class="card-header python">
+        <i class="fab fa-python"></i>
+      </div>
+      <div class="card-content">
+        <h1 class="card-title">PYTHON</h1>
+        <p class="card-text">
+          Python Programming - Test your knowledge on Python basics and advanced concepts.
+        </p>
+        <button class="card-btn python">Start Quiz</button>
+      </div>
+    </div>
+    <!-- Cards ADSA -->
+    <div class="card-wrap" data-subject="ADSA">
+      <div class="card-header adsa">
+        <i class="fas fa-project-diagram"></i>
+      </div>
+      <div class="card-content">
+        <h1 class="card-title">ADSA</h1>
+        <p class="card-text">
+          Advanced Data Structures & Algorithms - Challenge your problem-solving skills.
+        </p>
+        <button class="card-btn adsa">Start Quiz</button>
+      </div>
+    </div>
+    <!-- Cards GENERAL KNOWLEDGE -->
+  <div class="card-wrap" data-subject="GENERALKNOWLEDGE">
+      <div class="card-header gkn">
+        <i class="fas fa-globe" style="font-size: 56px; color: #fff;"></i>
+      </div>
+      <div class="card-content">
+        <h1 class="card-title">GENERAL KNOWLEDGE</h1>
+        <p class="card-text">
+          Test your knowledge of world facts, history, science, and culture!
+        </p>
+        <button class="card-btn gkn">Start Quiz</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script>
+  // ========== Trap Forward Navigation (place FIRST) ==========
+  // Setup history state index (using 1 for subject page)
+  let currentIndex = history.state && history.state.idx !== undefined ? history.state.idx : 1;
+  // If no state yet, replace one with current index = 1
+  if (!history.state || history.state.idx === undefined) {
+    history.replaceState({ idx: currentIndex }, '');
+  }
+  window.addEventListener('popstate', function(event) {
+    let newIndex = event.state && event.state.idx !== undefined ? event.state.idx : 1;
+    if (newIndex < currentIndex) {
+      // Back arrow pressed - allow going back normally (e.g., to registration)
+      currentIndex = newIndex;
+    } else if (newIndex > currentIndex) {
+      // Forward arrow pressed - trap it by pushing current state again
+      history.pushState({ idx: currentIndex }, '');
+    }
+  });
+
+  // ========== Subject Card Buttons (place AFTER above) ==========
+  document.querySelectorAll('.card-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const subject = this.closest('.card-wrap').dataset.subject;
+      localStorage.setItem('quizSubject', subject);
+      // Increment history index and push state before navigation
+      currentIndex++;
+      history.pushState({ idx: currentIndex }, '');
+      window.location.href = 'quiz.html';
+    });
+  });
+
+  // Add sliding animation when content loads
+  window.addEventListener("DOMContentLoaded", () => {
+    const mainContent = document.querySelector(".main-content-wrap");
+    if (mainContent) {
+      mainContent.classList.add("slide-in-right");
+    }
+  });
+
+  // Dark/Light mode toggle button logic
+  $('.toggle-slider').click(function () {
+    $('body').toggleClass('light');
+    $(this).toggleClass('day');
+    var knob = $(this).find('.toggle-knob');
+    knob.toggleClass('sun moon');
+  });
+</script>
+</body>
+</html>

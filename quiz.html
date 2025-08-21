@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #0F2027 0%, #2C5364 55%, #00C9FF 100%);
+    min-height: 100vh;
+    color: white;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 40%, rgba(255,255,255,0.13) 0%, rgba(0,0,0,0.0) 80%);
+  }
+
+  .quiz-wrapper {
+    position: relative;
+    max-width: 480px;
+    height: 500px; 
+    margin: 40px auto;
+    z-index: 2;
+  }
+
+  .quiz-container {
+    position: relative;
+    width: 480px;
+    height: 500px;
+    background: rgba(255,255,255,0.11);
+    border-radius: 15px;
+    padding: 0;
+    box-shadow:
+      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      0 0 0 1px rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    z-index: 2; 
+    overflow: hidden;
+  }
+
+  .quiz-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .face {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: transparent;
+    color: white;
+    padding: 40px 30px 30px 30px;
+    box-sizing: border-box;
+    transition: transform 0.6s cubic-bezier(.34,1.56,.64,1), z-index 0.6s ease;
+  }
+
+  .card-middle {
+    z-index: 2;
+    transform: translateX(0);
+  }
+  .card-behind {
+    z-index: 1;
+    transform: translateX(110%);
+  }
+  .card-middle.animate-left {
+    transform: translateX(-120%);
+    z-index: 2;
+  }
+  .card-behind.animate-in {
+    transform: translateX(0);
+    z-index: 3;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    z-index: 4;
+  }
+
+  .timer {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    user-select: none;
+    z-index: 5;
+  }
+  @keyframes blink-red {
+    0%, 50%, 100% { color: white; }
+    25%, 75% { color: red; }
+  }
+  .timer.blinking { animation: blink-red 1s infinite; }
+
+  .question-text {
+    flex-grow: 1;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    z-index: 4;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 4;
+  }
+
+  button.option-btn {
+    padding: 14px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border: 2px solid white;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  button.option-btn:hover:not(:disabled) {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  button.option-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .skip-btn {
+    position: fixed;
+    bottom: 42px;
+    right: 44px;
+    z-index: 12;
+    padding: 12px 32px 12px 20px;
+    border: none;
+    border-radius: 28px;
+    font-size: 1.13rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 24px rgba(36,48,70,0.18);
+    background: linear-gradient(90deg, #0F2027 0%, #2C5364 55%, #00C9FF 100%);
+    color: #fff;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .skip-btn:hover {
+    box-shadow: 0 6px 30px rgba(36,48,70,0.32);
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  .skip-arrow {
+    display: flex;
+    align-items: center;
+  }
+
+  .skip-arrow svg {
+    display: inline;
+    vertical-align: middle;
+  }
+
+  #particles-js {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0; left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .skip-subject-btn {
+    position: fixed;
+    bottom: 42px;
+    left: 44px;
+    z-index: 12;
+    padding: 12px 32px 12px 20px;
+    border: none;
+    border-radius: 28px;
+    font-size: 1.13rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 24px rgba(36,48,70,0.18);
+    background: linear-gradient(90deg, #0F2027 0%, #2C5364 55%, #00C9FF 100%);
+    color: #fff;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .skip-subject-btn:hover {
+    box-shadow: 0 6px 30px rgba(36,48,70,0.32);
+    transform: translateY(-2px) scale(1.03);
+  }
+  .skip-subject-btn .skip-arrow {
+    display: flex;
+    align-items: center;
+  }
+  .skip-subject-btn .skip-arrow svg {
+    display: inline;
+    vertical-align: middle;
+  }
+</style>
+
+<script>
+  // Trap back and forward browser navigation on quiz page
+  let allowNavigation = false;
+  for(let i=0; i<30; i++) {
+    history.pushState(null, '', window.location.href);
+  }
+  window.addEventListener('popstate', function(event) {
+    if (!allowNavigation) {
+      history.pushState(null, '', window.location.href);
+    }
+  });
+
+  // Permanently disable left/right arrow navigation
+  window.addEventListener('keydown', function(e) {
+    // 37 = left arrow, 39 = right arrow
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.keyCode === 37 || e.keyCode === 39) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }, true);
+
+  function enableNavigation() {
+    allowNavigation = true;
+  }
+</script>
+
+</head>
+<body>
+
+<!-- Particle background -->
+<div id="particles-js"></div>
+
+<div class="quiz-wrapper">
+  <div class="quiz-container" aria-live="polite" aria-atomic="true">
+    <div class="timer" id="timer">00:30s</div>
+    <div class="quiz-inner" id="quizInner">
+      <div class="face card-middle"></div>
+      <div class="face card-behind"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Skip Button (bottom right, with wide horizontal arrow) -->
+<button id="skipBtn" class="skip-btn">
+  Skip Question
+  <span class="skip-arrow">
+    <svg width="22" height="14" viewBox="0 0 22 14">
+      <polyline points="4,7 18,7" stroke="#fff" stroke-width="2.2" fill="none"/>
+      <polyline points="13,4 18,7 13,10" stroke="#fff" stroke-width="2.2" fill="none"/>
+    </svg>
+  </span>
+</button>
+
+<!-- Add this Skip Subject Button (bottom left, after .quiz-wrapper) -->
+<button id="skipSubjectBtn" class="skip-subject-btn">
+  <span class="skip-arrow">
+    <svg width="22" height="14" viewBox="0 0 22 14">
+      <polyline points="18,7 4,7" stroke="#fff" stroke-width="2.2" fill="none"/>
+      <polyline points="9,4 4,7 9,10" stroke="#fff" stroke-width="2.2" fill="none"/>
+    </svg>
+  </span>
+  Skip Subject
+</button>
+
+<!-- Particle effect setup -->
+<script src="particles.min.js"></script>
+<script>
+particlesJS('particles-js', {
+  particles: {
+    number: { value: 200, density: { enable: true, value_area: 1500 } },
+    color: { value: "#ffffff" },
+    shape: { type: "circle" },
+    opacity: { value: 0.38 },
+    size: { value: 3, random: true },
+    line_linked: {
+      enable: true,
+      distance: 130,
+      color: "#ffffff",
+      opacity: 0.38,
+      width: 2.2
+    },
+    move: {
+      enable: true,
+      speed: 1.1,
+      direction: "none",
+      out_mode: "out"
+    }
+  },
+  interactivity: {
+    detect_on: "window",
+    events: {
+      onhover: { enable: true, mode: "grab" },
+      onclick: { enable: false },
+      resize: true
+    },
+    modes: {
+      grab: { distance: 160, line_linked: { opacity: 0.45 } }
+    }
+  },
+  retina_detect: true
+});
+</script>
+
+<!-- Your question bank and quiz logic -->
+<script src="questions.js"></script>
+<script src="quiz.js"></script>
+
+<script>
+// On quiz page load, replace history so back arrow does not go to subject selection
+window.addEventListener('DOMContentLoaded', function() {
+  // Replace the previous history entry (subject.html) with quiz.html
+  history.replaceState(null, '', window.location.href);
+
+  // Skip Subject button: go back to subject selection
+  document.getElementById("skipSubjectBtn").onclick = function() {
+    enableNavigation();
+    window.location.href = "subject.html";
+  };
+
+  // Skip Question button: go to next question (do not go to subject selection)
+  document.getElementById("skipBtn").onclick = function() {
+    // Try to call the skipQuestion function from quiz.js if it exists
+    if (typeof skipQuestion === "function") {
+      skipQuestion();
+    } else if (typeof nextQuestion === "function") {
+      nextQuestion();
+    } else {
+      // Fallback: reload the page (not recommended, but prevents navigation)
+      location.reload();
+    }
+  };
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizify - Welcome</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0e7ff 0%, #ffe0f0 50%, #fffde4 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+    .landing-card {
+      background: rgba(255,255,255,0.18);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      padding: 48px 36px 36px 36px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      border: 1.5px solid rgba(255,255,255,0.32);
+    }
+    h1 {
+      color: #5a3ec8;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .desc {
+      color: #333;
+      font-size: 1.13rem;
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+    .start-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 38px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      transition: background 0.2s;
+    }
+    .start-btn:hover {
+      background: linear-gradient(135deg, #764ba2, #667eea);
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative SVG doodles background -->
+  <!-- Top Left Doodle -->
+  <svg width="200" height="120" viewBox="0 0 200 120" style="position:fixed; left:1vw; top:2vh; z-index:-1; opacity:1;" aria-hidden="true">
+    <defs>
+      <linearGradient id="doodle1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#e0e7ff"/>
+        <stop offset="100%" stop-color="#ffe0f0"/>
+      </linearGradient>
+    </defs>
+    <path d="M30,70 Q80,10 170,70 T190,70" fill="none" stroke="url(#doodle1)" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="60" cy="30" r="16" fill="url(#doodle1)" opacity="0.7"/>
+    <circle cx="160" cy="90" r="13" fill="url(#doodle1)" opacity="0.5"/>
+  </svg>
+  <!-- Top Right Doodle -->
+  <svg width="120" height="80" viewBox="0 0 120 80" style="position:fixed; right:2vw; top:2vh; z-index:-1; opacity:0.95;" aria-hidden="true">
+    <defs>
+      <linearGradient id="doodle3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffe0f0"/>
+        <stop offset="100%" stop-color="#e0e7ff"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="60" cy="40" rx="40" ry="22" fill="url(#doodle3)"/>
+    <path d="M20,60 Q60,10 100,60" fill="none" stroke="url(#doodle3)" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <!-- Bottom Left Doodle -->
+  <svg width="120" height="80" viewBox="0 0 120 80" style="position:fixed; left:2vw; bottom:2vh; z-index:-1; opacity:0.95;" aria-hidden="true">
+    <defs>
+      <linearGradient id="doodle4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fffde4"/>
+        <stop offset="100%" stop-color="#ffe0f0"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="60" cy="40" rx="40" ry="22" fill="url(#doodle4)"/>
+    <path d="M20,60 Q60,10 100,60" fill="none" stroke="url(#doodle4)" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <!-- Bottom Right Doodle -->
+  <svg width="140" height="100" viewBox="0 0 140 100" style="position:fixed; right:4vw; bottom:4vh; z-index:-1; opacity:0.95;" aria-hidden="true">
+    <defs>
+      <linearGradient id="doodle2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffe0f0"/>
+        <stop offset="100%" stop-color="#fffde4"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="70" cy="50" rx="55" ry="28" fill="url(#doodle2)"/>
+    <path d="M20,80 Q70,20 120,80" fill="none" stroke="url(#doodle2)" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <div class="landing-card">
+    <h1>Welcome to Quizify!</h1>
+    <div class="desc">
+      Test your knowledge, earn certificates, and gain more knowledge<br>
+      Click below to get started!
+    </div>
+    <button class="start-btn" onclick="window.location.href='registration.html'">Start Quiz</button>
+  </div>
+</body>
+</html>

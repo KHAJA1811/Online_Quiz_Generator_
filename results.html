@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz Results</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #4169e1 0%, #ff69b4 100%);
+    color: #222;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  #particles-js {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  .result-card {
+    background: rgba(255,255,255,0.13);
+    border-radius: 23px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.15);
+    padding: 34px 32px 16px 32px;
+    min-width: 420px;
+    max-width: 99vw;
+    width: 700px; /* Extended width for single-line actions */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: width 0.4s;
+  }
+  .banner-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto 16px auto;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .banner {
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: #2740c4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 370px;
+    display: inline-block;
+    margin: 0;
+    text-align: center;
+  }
+  .symbol { font-size: 2.2rem; }
+  .progress-circle {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    pointer-events: none;
+  }
+  .circle-percent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #0a0c0b;
+    pointer-events: none;
+    font-family: 'Poppins', sans-serif;
+  }
+  .circle-bg { stroke: #fff; }
+  .circle-progress { stroke: #079a49; transition: stroke-dashoffset 1s cubic-bezier(.32,.87,.56,.97); }
+  .identity-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .name-score {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-align: center;
+    width: 100%;
+    word-break: break-word;
+  }
+  .email-line {
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-align: center;
+    width: 100%;
+    word-break: break-word;
+  }
+  #resultMessage {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 6px 0 8px 0;
+    color: #2740c4;
+    text-align: center;
+    width: 100%;
+  }
+  .result-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+    width: 100%;
+  }
+  .action-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+  }
+  button {
+    background: #007bee;
+    color: #fff;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  }
+  button:hover {
+    background: #0056b3;
+  }
+  .dropdown {
+    position: relative;
+  }
+  .dropdown-btn {
+    background: #007bee;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    padding: 8px 24px 8px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 500;
+  }
+  .arrow {
+    vertical-align: middle;
+    margin-left: 4px;
+    position: relative;
+    display: inline-block;
+  }
+  .arrow::before { display: none; }
+  .arrow svg {
+    display: inline;
+    vertical-align: middle;
+  }
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.14);
+    min-width: 140px;
+    z-index: 10;
+    flex-direction: column;
+  }
+  .dropdown.open .dropdown-menu {
+    display: flex;
+  }
+  .dropdown-menu button {
+    background: none;
+    color: #007bee;
+    padding: 10px 18px;
+    border-radius: 0;
+    font-size: 0.97rem;
+    text-align: left;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+  }
+  .dropdown-menu button:hover {
+  background: linear-gradient(135deg, #4169e1 0%, #ff69b4 100%);
+  color: #fff;
+  }
+  .dropdown.open #dropdownMenu { display: flex; }
+</style>
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  (function(){
+    emailjs.init("zXpCeLsFsN9O5uwR7"); // <-- Replace with your actual EmailJS User ID
+  })();
+</script>
+</head>
+<body>
+
+<script>
+  // Trap all backward navigation permanently on results page
+  (function trapBackNav() {
+    for (let i = 0; i < 100; i++) {
+      history.pushState(null, '', window.location.href);
+    }
+    window.addEventListener('popstate', function(event) {
+      history.pushState(null, '', window.location.href);
+    });
+  })();
+</script>
+
+<div id="particles-js"></div>
+  <div class="result-card">
+  <!-- BadgeBox removed: badge will only be shown on certificate card -->
+  <div class="banner-container">
+    <span class="banner">
+      Quiz Completed <span class="symbol">🎉</span>
+    </span>
+    <div class="progress-circle" aria-label="Quiz Score Progress">
+      <svg width="70" height="70" role="img" aria-hidden="true">
+        <circle class="circle-bg" cx="35" cy="35" r="30" stroke-width="8" fill="none"/>
+        <circle class="circle-progress" cx="35" cy="35" r="30" stroke-width="8" fill="none"
+          stroke-dasharray="188" stroke-dashoffset="188" id="progressArc"
+          stroke-linecap="round"/>
+      </svg>
+      <span class="circle-percent" id="circlePercent"></span>
+    </div>
+  </div>
+  <div class="identity-block">
+    <div class="name-score" id="centerName">
+      Name! You have scored 0/10 marks.
+    </div>
+    <div class="email-line" id="centerEmail">
+      Email: email@email.com
+    </div>
+    <div class="statement" id="resultMessage"></div>
+    <div id="wrongAnswersBox" style="display:none; margin-top:18px; width:100%; background:rgba(255,255,255,0.18); border-radius:12px; padding:14px 18px; box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+      <div style="font-weight:600; color:#c62828; font-size:1.08rem; margin-bottom:8px;">Wrong Answers</div>
+      <ul id="wrongAnswersList" style="margin:0; padding-left:18px; color:#b71c1c; font-size:1rem;"></ul>
+    </div>
+  </div>
+  <div class="result-actions">
+    <div class="action-row" id="actionRow">
+      <button onclick="restartQuiz()">Play Again</button>
+      <div class="dropdown" id="newGameDropdown">
+        <button class="dropdown-btn" onclick="toggleDropdown()">
+          <span style="display: flex; align-items: center; justify-content: center; gap: 7px;">
+            <span style="display:inline-block;">New Game</span>
+            <span style="display:flex; align-items:center;">
+              <svg width="18" height="10" viewBox="0 0 18 10">
+                <polyline points="3,3 9,9 15,3" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <button onclick="changeSubject()">Change Subject</button>
+          <button onclick="newPlayer()">New Player</button>
+        </div>
+      </div>
+      <div class="dropdown" id="certDropdown" style="margin-left: 10px;">
+        <button class="dropdown-btn" id="getCertBtn" style="display:none; background: #ff9800; color: #fff; font-weight:600; display:flex; align-items:center; gap:7px;">
+          <span id="previewCertText">Preview Certificate</span>
+          <span id="certDropdownArrow" style="display:flex; align-items:center; cursor:pointer;">
+            <svg width="18" height="10" viewBox="0 0 18 10">
+              <polyline points="3,3 9,9 15,3" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+        <div class="dropdown-menu" id="certDropdownMenu" style="min-width:180px;">
+          <button id="emailCertBtn">Get Certificate</button>
+          <button id="downloadCertBtn">Download Certificate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="particles.min.js"></script>
+<script>
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 200, density: { enable: true, value_area: 800 } },
+      color: { value: "#ffffff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.4 },
+      size: { value: 3, random: true },
+      line_linked: { enable: true, distance: 120, color: "#ffffff", opacity: 0.3, width: 1 },
+      move: { enable: true, speed: 3 }
+    },
+    interactivity: {
+      detect_on: "window",
+      events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
+      modes: {
+        grab: { distance: 140, line_linked: { opacity: 1 } },
+        push: { particles_nb: 4 }
+      }
+    },
+    retina_detect: true
+  });
+
+  window.onload = function() {
+    const name = localStorage.getItem("quizUserName") || "Player";
+    const email = localStorage.getItem("quizUserEmail") || "Email";
+    const scoreStr = localStorage.getItem("quizScore") || "0/10";
+    const subject = localStorage.getItem("quizSubject") || "";
+    const [score, total] = scoreStr.split('/').map(Number);
+
+    document.getElementById("centerName").textContent = `${name}! You have scored ${score}/${total} marks.`;
+    document.getElementById("centerEmail").textContent = `Email: ${email}`;
+
+    const percent = total > 0 ? Math.round((score / total) * 100) : 0;
+    document.getElementById("circlePercent").textContent = percent + "%";
+
+    let message = "";
+    if (percent === 100) {
+        message = "🌟 Perfect! Outstanding performance!";
+    } else if (percent >= 80) {
+        message = "✅ Excellent job!";
+    } else if (percent >= 50) {
+        message = "👍 Good effort, keep practicing!";
+    } else {
+        message = "💪 Don't give up! Try again!";
+    }
+    document.getElementById("resultMessage").textContent = message;
+
+    const circumference = 188;  // 2 * PI * 30
+    const offset = circumference - (percent / 100) * circumference;
+    const arc = document.getElementById("progressArc");
+    arc.style.strokeDasharray = circumference;
+    arc.style.strokeDashoffset = offset;
+
+    // Show badge and Get Certificate button if score >= 8
+    if (score >= 8) {
+      // Show wrong answered questions if any
+      const wrongs = JSON.parse(localStorage.getItem("quizWrongAnswers") || "[]");
+      if (wrongs.length > 0) {
+        const box = document.getElementById("wrongAnswersBox");
+        const list = document.getElementById("wrongAnswersList");
+        box.style.display = "block";
+        list.innerHTML = wrongs.map(w => `<li><b>Q:</b> ${w.question}<br><b>Correct:</b> ${w.correctAnswer}</li>`).join("");
+      }
+      const certBtn = document.getElementById("getCertBtn");
+      certBtn.style.display = "inline-flex";
+      // Clicking the text opens certificate, clicking arrow opens dropdown
+      document.getElementById('previewCertText').addEventListener('click', function(e) {
+        window.location.href = `certificate.html?name=${encodeURIComponent(name)}&score=${encodeURIComponent(scoreStr)}&subject=${encodeURIComponent(subject)}`;
+      });
+      document.getElementById('certDropdownArrow').addEventListener('click', function(e) {
+        e.stopPropagation();
+        var dropdown = document.getElementById('certDropdown');
+        dropdown.classList.toggle('open');
+      });
+      // Close dropdown on outside click
+      document.addEventListener('click', function(e) {
+        var dropdown = document.getElementById('certDropdown');
+        if (dropdown.classList.contains('open')) {
+          dropdown.classList.remove('open');
+        }
+      });
+      // Prevent menu click from closing
+      document.getElementById('certDropdownMenu').addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      // Get Certificate (send to email)
+      document.getElementById('emailCertBtn').onclick = function() {
+        const email = localStorage.getItem('quizUserEmail') || '';
+        const player_name = localStorage.getItem("quizUserName") || '';
+        const score = localStorage.getItem("quizScore") || '';
+        const subject = localStorage.getItem("quizSubject") || '';
+        if (!email) {
+          alert('No email found. Please register again.');
+          return;
+        }
+        emailjs.send("service_tsoplxt", "template_vkptegj", {
+          to_email: email,
+          player_name,
+          score,
+          subject
+        }).then(function(response) {
+          alert("Certificate sent to your email!");
+        }, function(error) {
+          alert("Failed to send certificate. Please try again.");
+        });
+      };
+      // Download Certificate
+      document.getElementById('downloadCertBtn').onclick = function() {
+        window.open(`certificate.html?name=${encodeURIComponent(name)}&score=${encodeURIComponent(scoreStr)}&subject=${encodeURIComponent(subject)}&download=1`, '_blank');
+      };
+    } else {
+      // Hide certificate dropdown if score < 8
+      document.getElementById("certDropdown").style.display = "none";
+    }
+  };
+
+  function toggleDropdown() {
+    const dropdown = document.getElementById("newGameDropdown");
+    dropdown.classList.toggle("open");
+  }
+  function restartQuiz() {
+    window.location.href = "quiz.html";
+  }
+  function changeSubject() {
+    window.location.href = "subject.html";
+  }
+  function newPlayer() {
+    localStorage.clear();
+    window.location.href = "registration.html";
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+</body>
+</html>

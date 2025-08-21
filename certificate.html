@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Certificate</title>
+  <style>
+    body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #ffe0f0 50%, #fffde4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .certificate {
+      background: linear-gradient(135deg, #fffbe6 0%, #ffe0b2 40%, #ffd6e0 100%);
+      border: 6px solid #ff9800;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      padding: 90px 40px 36px 40px; /* extra top padding for blob */
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+      min-height: 520px;
+      box-sizing: border-box;
+    }
+    .certificate h1 {
+      font-size: 2.2rem;
+      color: #ff9800;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .certificate .subtitle {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+    .certificate .name {
+      font-size: 1.5rem;
+      color: #2c3e50;
+      font-weight: 600;
+      margin-bottom: 10px;
+      margin-top: 18px;
+      letter-spacing: 1px;
+    }
+    .certificate .score {
+      font-size: 1.1rem;
+      color: #444;
+      margin-bottom: 18px;
+    }
+    .certificate .date {
+      font-size: 1rem;
+      color: #888;
+      margin-bottom: 30px;
+    }
+    .certificate .footer {
+      font-size: 1.05rem;
+      color: #ff9800;
+      font-weight: 600;
+      margin-top: 30px;
+      letter-spacing: 1px;
+    }
+    .certificate .logo {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      width: 60px;
+      opacity: 0.13;
+    }
+    .certificate .seal {
+      position: absolute;
+      bottom: 24px;
+      left: 32px;
+      width: 60px;
+      opacity: 0.18;
+    }
+    @media (max-width: 600px) {
+      .certificate {
+        padding: 24px 8px 18px 8px;
+      }
+      .certificate .logo, .certificate .seal {
+        width: 40px;
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        bottom: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative gradient SVG blob background -->
+  <svg id="bgBlob1" width="520" height="420" viewBox="0 0 520 420" style="position:fixed; left:-120px; top:-100px; z-index:0; opacity:0.65; transition: filter 1.5s, transform 1.5s;" aria-hidden="true">
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#a5b4fc"/>
+        <stop offset="60%" stop-color="#ffe0f0"/>
+        <stop offset="100%" stop-color="#fffde4"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="260" cy="210" rx="240" ry="170" fill="url(#grad1)"/>
+  </svg>
+  <svg id="bgBlob2" width="400" height="320" viewBox="0 0 400 320" style="position:fixed; right:-100px; bottom:-80px; z-index:0; opacity:0.45; transition: filter 1.5s, transform 1.5s;" aria-hidden="true">
+
+  <!-- Extra animated blobs -->
+  <svg id="bgBlob3" width="260" height="180" viewBox="0 0 260 180" style="position:fixed; left:40vw; top:-60px; z-index:0; opacity:0.38; transition: filter 1.5s, transform 1.5s;" aria-hidden="true">
+    <defs>
+      <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffe0f0"/>
+        <stop offset="100%" stop-color="#a5b4fc"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="130" cy="90" rx="110" ry="70" fill="url(#grad3)"/>
+  </svg>
+  <svg id="bgBlob4" width="180" height="120" viewBox="0 0 180 120" style="position:fixed; right:30vw; bottom:-40px; z-index:0; opacity:0.32; transition: filter 1.5s, transform 1.5s;" aria-hidden="true">
+    <defs>
+      <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fffde4"/>
+        <stop offset="100%" stop-color="#a5b4fc"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="90" cy="60" rx="80" ry="50" fill="url(#grad4)"/>
+  </svg>
+    <defs>
+      <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffe0f0"/>
+        <stop offset="80%" stop-color="#a5b4fc"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="200" cy="160" rx="180" ry="120" fill="url(#grad2)"/>
+  </svg>
+  <div class="certificate" id="certificate">
+  <div id="badgeBox" style="position:absolute; top:24px; right:48px; z-index:2;"></div>
+  <h1>Certificate of Achievement</h1>
+  <div class="subtitle">Congratulations !</div>
+  <div id="congratsPara" style="margin: 32px 0 28px 0; font-size: 1.18rem; color: #2c3e50; font-weight: 500; line-height: 1.7;"></div>
+  <div class="date" id="certDate">Date: 16 August 2025</div>
+  <div class="footer">QUIZIFY</div>
+  <button id="shareQuizBtn" style="margin-top:22px; background:#667eea; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:1.08rem; font-weight:600; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,0.09);">Share Quiz Link</button>
+  </div>
+  <script>
+    // Animate background blobs
+    function animateBlobs() {
+      const blob1 = document.getElementById('bgBlob1');
+      const blob2 = document.getElementById('bgBlob2');
+      const blob3 = document.getElementById('bgBlob3');
+      const blob4 = document.getElementById('bgBlob4');
+      let t = 0;
+      function loop() {
+        t += 0.016;
+        // Blob 1 floats up/down and rotates gently
+        const y1 = -100 + Math.sin(t/1.7)*18;
+        const x1 = -120 + Math.cos(t/2.2)*14;
+        const r1 = Math.sin(t/2.5)*6;
+        blob1.style.top = y1 + 'px';
+        blob1.style.left = x1 + 'px';
+        blob1.style.transform = `rotate(${r1}deg)`;
+        // Blob 2 floats up/down and rotates gently
+        const y2 = -80 + Math.cos(t/1.9)*14;
+        const x2 = -100 + Math.sin(t/2.7)*10;
+        const r2 = Math.cos(t/2.3)*7;
+        blob2.style.bottom = y2 + 'px';
+        blob2.style.right = x2 + 'px';
+        blob2.style.transform = `rotate(${r2}deg)`;
+        // Blob 3 floats in the top center
+        const y3 = -60 + Math.sin(t/1.3)*10;
+        const x3 = window.innerWidth*0.4 + Math.cos(t/1.8)*12;
+        const r3 = Math.sin(t/2.1)*5;
+        blob3.style.top = y3 + 'px';
+        blob3.style.left = x3 + 'px';
+        blob3.style.transform = `rotate(${r3}deg)`;
+        // Blob 4 floats in the bottom center
+        const y4 = -40 + Math.cos(t/1.5)*8;
+        const x4 = window.innerWidth*0.7 + Math.sin(t/2.3)*8;
+        const r4 = Math.cos(t/2.7)*4;
+        blob4.style.bottom = y4 + 'px';
+        blob4.style.right = x4 + 'px';
+        blob4.style.transform = `rotate(${r4}deg)`;
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+    window.addEventListener('DOMContentLoaded', animateBlobs);
+    // Animate bouquets from corners on load
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var left = document.getElementById('bouquetLeft');
+        var right = document.getElementById('bouquetRight');
+        left.style.transition = 'all 1.1s cubic-bezier(.23,1.12,.56,1)';
+        right.style.transition = 'all 1.1s cubic-bezier(.23,1.12,.56,1)';
+        left.style.left = '18px';
+        left.style.bottom = '18px';
+        left.style.opacity = '1';
+        left.style.transform = 'scale(1) rotate(-10deg)';
+        right.style.right = '18px';
+        right.style.bottom = '18px';
+        right.style.opacity = '1';
+        right.style.transform = 'scale(1) rotate(10deg)';
+      }, 120);
+    });
+    // Fill in certificate details from query params or localStorage
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    const name = getQueryParam('name') || localStorage.getItem('quizUserName') || 'Player';
+    const scoreStr = getQueryParam('score') || localStorage.getItem('quizScore') || '0/10';
+    const subject = getQueryParam('subject') || localStorage.getItem('quizSubject') || '';
+    const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('certDate').textContent = `Date: ${date}`;
+
+    // Parse score
+    let score = 0, total = 10;
+    if (scoreStr && scoreStr.includes('/')) {
+      [score, total] = scoreStr.split('/').map(Number);
+    }
+
+    // Set congratulatory paragraph
+    let para = `Dear <b>${name}</b>,<br>We are delighted to congratulate you for scoring <b>${score}/${total}</b> in the subject <b>${subject}</b>.<br>Your dedication and hard work have truly paid off!<br><br>Thank you for participating in QUIZIFY.`;
+    document.getElementById('congratsPara').innerHTML = para;
+
+    // Badge logic (only for 8, 9, 10)
+    let badge = '', badgeAlt = '';
+    if (score === 8) {
+      badge = '🥉'; badgeAlt = 'Bronze Badge';
+    } else if (score === 9) {
+      badge = '🥈'; badgeAlt = 'Silver Badge';
+    } else if (score === 10) {
+      badge = '🥇'; badgeAlt = 'Gold Badge';
+    }
+    if (badge) {
+      document.getElementById('badgeBox').innerHTML = `<span title="${badgeAlt}" style="font-size: 3.2rem;">${badge}</span>`;
+    }
+    // Share Quiz Link button logic
+    document.getElementById('shareQuizBtn').onclick = function() {
+      // Get current location, replace with registration.html
+      let url = window.location.origin + window.location.pathname;
+      url = url.replace(/certificate\.html.*/, 'registration.html');
+      // Copy to clipboard
+      navigator.clipboard.writeText(url).then(function() {
+        document.getElementById('shareQuizBtn').textContent = 'Link Copied!';
+        setTimeout(()=>{
+          document.getElementById('shareQuizBtn').textContent = 'Share Quiz Link';
+        }, 1800);
+      });
+    };
+  </script>
+</body>
+</html>
